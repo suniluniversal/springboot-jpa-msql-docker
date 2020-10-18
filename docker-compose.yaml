@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  mysql-docker-container:
+    image: mysql:latest
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=spring_app_db
+      - MYSQL_USER=app_user
+      - MYSQL_PASSWORD=test123
+    volumes:
+      - /data/mysql
+    networks:
+      - mynetwork
+  w10demo:
+    image: w10demo
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      - WAIT_HOSTS=mysql-docker-container:3306
+    ports:
+      - 8087:8080
+    volumes:
+      - /data/w10demo
+    networks:
+      - mynetwork
+networks:
+  mynetwork:
